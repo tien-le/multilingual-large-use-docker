@@ -1,6 +1,6 @@
 Link: https://unfoldai.com/deploy-models-tf-serving/
 
-path = C:\Users\TienLe\dev\cty\00_hoc_de_gap\use\multilingual-large-use-docker
+path = xxx\use\multilingual-large-use-docker
 
 \n\s*bash\n\n
 
