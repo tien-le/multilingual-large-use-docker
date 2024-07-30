@@ -1,0 +1,20 @@
+# https://www.tensorflow.org/tfx/serving/serving_config
+# https://github.com/tensorflow/serving/blob/master/tensorflow_serving/batching/README.md
+
+# max_batch_size: The maximum size of any batch.
+#   This parameter governs the throughput/latency tradeoff,
+#   and also avoids having batches that are so large they exceed some resource constraint
+#   (e.g. GPU memory to hold a batch's data).
+max_batch_size { value: 64 }
+
+# batch_timeout_micros: The maximum amount of time to wait before executing a batch (even if it hasn't reached max_batch_size).
+#   Used to rein in tail latency. (See basic_batch_scheduler.h for the exact latency contract.)
+batch_timeout_micros { value: 0 }
+
+# max_enqueued_batches: The number of batches worth of tasks that can be enqueued to the scheduler.
+#   Used to bound queueing delay, by turning away requests that would take a long time to get to, rather than building up a large backlog.
+max_enqueued_batches { value: 1000000 }
+
+# num_batch_threads: The degree of parallelism, i.e. the maximum number of batches processed concurrently
+# the number of CPU cores.
+num_batch_threads { value: 2 }

@@ -1,0 +1,42 @@
+name: multilingual-large-use-docker
+services:
+  tensorflow_serving:
+    build: .
+    ports:
+      - "8501:8501"  # HTTP port for REST API
+      - "8500:8500"  # gRPC port for gRPC API, Port 8500 is exposed for gRPC requests. TensorFlow Serving supports both REST and gRPC APIs.
+    volumes:
+      - ./models:/models
+      - ./models_config:/models_config      # model configuration
+      - ./batching_config:/batching_config  # Enable request batching by setting --enable_batching=true. Batching can improve throughput at the cost of increased latency; settings for batch sizes and timeouts; Monitoring: to configure monitoring settings, such as Prometheus metrics.
+    environment:
+      - MODEL_NAME=${MODEL_NAME}
+    restart: on-failure  # policy ensures that the container restarts if it fails
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'  # 50% of one core's capacity
+          memory: 2G   # maximum amount of memory the container can use, equal to 2 gigabytes (GB).
+    # Optionally, add a healthcheck
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:8501/v1/models/$MODEL_NAME"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+
+    # Optional: Add network configuration
+    # networks:
+    #   - default
+
+    # Optional: Configure logging options
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-size: "10m"
+    #     max-file: "3"
+
+# Optional: Define networks if necessary
+# networks:
+#   default:
+#     driver: bridge
